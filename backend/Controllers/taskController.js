@@ -90,3 +90,29 @@ exports.searchTasks = async (req, res) => {
         res.status(500).json({ message: "Not able to search tasks " + error }); 
     }
 };
+
+exports.getPaginatedTasks = async (req, res) => {
+    const page = parseInt(req.query.page) || 1; 
+    const limit = parseInt(req.query.limit) || 10;
+
+    const offset = (page - 1) * limit;
+
+    try {
+        const { count, rows } = await Task.findAndCountAll({
+            where: { userId: req.user.id }, 
+            limit: limit,
+            offset: offset,
+            order: [['createdAt', 'DESC']]
+        });
+
+        res.status(200).json({
+            tasks: rows,
+            currentPage: page,
+            totalPages: Math.ceil(count / limit),
+            totalTasks: count,
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while fetching tasks' });
+    }
+};
+

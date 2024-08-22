@@ -2,7 +2,7 @@
 const { Sequelize } = require('sequelize');
 
 const sequelize = new Sequelize('GoKapture', 'root', 'kanan111"', {
-  host: 'db',
+  host: 'localhost',
   dialect: 'mysql',
   port: 3306,
   retry: {
