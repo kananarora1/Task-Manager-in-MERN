@@ -2,12 +2,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Button, Form, Input, message } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { LoginUser } from '../Calls/user';
-import { UserContext } from '../context/usercontext';
 import './register.css';
 
 function Login() {
   const navigate = useNavigate();
-  const { setUser } = useContext(UserContext);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
