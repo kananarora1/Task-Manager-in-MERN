@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Form, Input, Button, Radio, message } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { RegisterUser } from '../Calls/user';
 import './register.css';
@@ -16,8 +16,6 @@ function Register() {
   const onFinish = async (values) => {
     try {
       const response = await RegisterUser(values);
-      console.log(response);
-      console.log(response.userId);
       if (response.success) {
         message.success(response.message);
         navigate('/login');
@@ -25,7 +23,8 @@ function Register() {
         message.error(response.message);
       }
     } catch (error) {
-      message.error(error.message);
+      console.error("Registration Error:", error);
+      message.error("Registration failed. Please try again.");
     }
   };
 
@@ -39,12 +38,12 @@ function Register() {
           <section className="right-section">
             <Form layout="vertical" onFinish={onFinish}>
               <Form.Item
-                label="Name"
-                name="name"
+                label="Username"
+                name="username"
                 className="d-block"
-                rules={[{ required: true, message: 'Name is required!' }]}
+                rules={[{ required: true, message: 'Username is required!' }]}
               >
-                <Input type="text" placeholder="Enter your name" />
+                <Input type="text" placeholder="Enter your username" />
               </Form.Item>
               <Form.Item
                 label="Email"
@@ -60,7 +59,7 @@ function Register() {
                 className="d-block"
                 rules={[{ required: true, message: 'Password is required!' }]}
               >
-                <Input type="password" placeholder="Enter the password" />
+                <Input type="password" placeholder="Enter your password" />
               </Form.Item>
               <Form.Item>
                 <Button

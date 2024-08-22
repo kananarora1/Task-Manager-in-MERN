@@ -17,25 +17,19 @@ function Login() {
 
   const onFinish = async (values) => {
     try {
-      const response = await LoginUser(values);
-      if (response.success) {
-        message.success(response.message);
-        localStorage.setItem('token', response.token);
-        const userResponse = await fetch('http://localhost:8080/api/users/currentUser', {
-          headers: {
-            Authorization: `Bearer ${response.token}`,
-          },
-        });
-        const userData = await userResponse.json();
-        setUser(userData);
-        console.log('Fetched user data:', userData);
-        navigate('/');
-      }
+        const response = await LoginUser(values);
+        if (response.success) {
+            message.success(response.message);
+            localStorage.setItem('token', response.token);
+            navigate('/');
+        } else {
+            message.error(response.message || 'Login failed');
+        }
     } catch (error) {
-      message.error(error.message);
+        message.error(error.response?.data?.message || 'An error occurred during login');
     }
-  };
-
+    };
+  
   if (loading) return <div>Loading...</div>; 
 
   return (

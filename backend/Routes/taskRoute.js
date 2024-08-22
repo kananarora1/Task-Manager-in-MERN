@@ -12,3 +12,9 @@ router.get('/:id', taskController.getTaskById);
 router.patch('/:id', taskController.updateTask);
 
 router.delete('/:id', taskController.deleteTask);
+
+router.get('/filteredTasks', taskController.filterTasks);
+
+router.get('/search', taskController.searchTasks);
+
+module.exports = router;

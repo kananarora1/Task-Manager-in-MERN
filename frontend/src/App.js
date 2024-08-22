@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-// import Home from './Pages/Home';  
+import Home from './Home/home';  
 import Login from './Pages/login';
 import Register from './Pages/register';
 import { UserProvider } from './context/usercontext';
@@ -10,6 +10,7 @@ function App() {
     <UserProvider>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>

@@ -4,8 +4,10 @@ const {axiosInstance} = require('./index')
 
 export const RegisterUser = async (value) => {
     try{
-        const response = await axiosInstance.post("/api/users/register", value);
+        const response = await axiosInstance.post("/api/users/login", value);
+        console.log('Login Response:', response); 
         return response.data;
+
     }catch(error){
         console.log(error);
     }
@@ -16,8 +18,12 @@ export const RegisterUser = async (value) => {
 
 export const LoginUser = async (value) =>{
     try {
-        const response = await axiosInstance.post("/api/users/login", value);
-        return response.data
+        const values = {
+            email: value.email,
+            password: value.password
+        }
+        const response = await axiosInstance.post("/api/users/login", values);
+        return response.data;
     } catch (error) {
         console.log(error);
     }

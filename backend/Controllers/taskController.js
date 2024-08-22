@@ -1,3 +1,4 @@
+const { where } = require('sequelize');
 const Task = require('../Models/task');
 
 exports.createTask = async (req, res) => {
@@ -60,3 +61,32 @@ exports.deleteTask = async (req, res) => {
     }
 }
 
+exports.filterTasks = async (req, res) => {
+    try {
+        const tasks = await Task.findAll({
+            where: {
+                status: req.query.status,
+                priority: req.query.priority,
+            }
+        });
+        res.send(tasks);
+    } catch (error) {
+        res.status(500).json({ message: "Not able to filter tasks " + error });
+    }
+}
+
+exports.searchTasks = async (req, res) => {
+    try {
+        const tasks = await Task.findAll({
+            where: {
+                [where.or]: [
+                    { title: { [where.like]: `%${req.query.search}%` } },
+                    { description: { [where.like]: `%${req.query.search}%` } },
+                ]
+            }
+        });
+        res.send(tasks);
+    } catch (error) {
+        res.status(500).json({ message: "Not able to search tasks " + error }); 
+    }
+};
