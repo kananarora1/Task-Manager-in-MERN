@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Form, Input, List, Modal, Select, Typography, Tag, Pagination } from 'antd';
+import { Button, Form, Input, List, Modal, Select, Typography, Tag } from 'antd';
 import axios from 'axios';
 import './home.css';
 import { toast, ToastContainer } from 'react-toastify';
@@ -13,28 +13,19 @@ function Home() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [filter, setFilter] = useState({ status: '', priority: '' });
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalTasks, setTotalTasks] = useState(0);
 
   useEffect(() => {
     fetchTasks();
-  }, [filter, currentPage]);
+  }, [filter]);
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get('/api/tasks', {
-        params: {
-          page: currentPage,
-          limit: 10, // Number of tasks per page
-          status: filter.status,
-          priority: filter.priority,
-        },
-      });
-      setTasks(response.data.tasks);
-      setCurrentPage(response.data.currentPage);
-      setTotalPages(response.data.totalPages);
-      setTotalTasks(response.data.totalTasks);
+      const response = await axios.get('/api/tasks');
+      const filteredTasks = response.data
+        .filter(task => task.status !== 'Done')
+        .filter(task => (filter.status ? task.status === filter.status : true))
+        .filter(task => (filter.priority ? task.priority === filter.priority : true));
+      setTasks(filteredTasks);
     } catch (error) {
       console.error('Error fetching tasks:', error);
     }
@@ -55,7 +46,7 @@ function Home() {
       await axios.patch(`/api/tasks/${id}`, values);
       if (values.status === 'Done') {
         toast.success('Task completed successfully');
-        fetchTasks(); // Refresh tasks
+        setTasks(prevTasks => prevTasks.filter(task => task.id !== id));
       } else if (values.status === 'In Progress') {
         toast.info('Good Luck with your task');
       } else {
@@ -73,7 +64,7 @@ function Home() {
     try {
       await axios.delete(`/api/tasks/${id}`);
       toast.success('Task deleted successfully');
-      fetchTasks();
+      setTasks(prevTasks => prevTasks.filter(task => task.id !== id));
     } catch (error) {
       console.error('Error deleting task:', error);
       toast.error('Error deleting task');
@@ -92,7 +83,6 @@ function Home() {
 
   const handleFilterChange = (value, type) => {
     setFilter(prevFilter => ({ ...prevFilter, [type]: value }));
-    setCurrentPage(1); // Reset to first page on filter change
   };
 
   return (
@@ -141,14 +131,6 @@ function Home() {
             />
           </List.Item>
         )}
-      />
-
-      <Pagination
-        current={currentPage}
-        total={totalTasks}
-        pageSize={10}
-        onChange={(page) => setCurrentPage(page)}
-        style={{ marginTop: 20, textAlign: 'center' }}
       />
 
       <Modal
