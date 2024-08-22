@@ -12,7 +12,7 @@ sequelize.authenticate()
   .then(() => console.log('Database connected...'))
   .catch((err) => console.error('Error connecting to database:', err));
 
-app.use('/api/user', userRoutes);
+app.use('/api/users', userRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
