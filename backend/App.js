@@ -12,13 +12,16 @@ app.use(cors());
 app.use(express.json());
 
 sequelize.authenticate()
-  .then(() => console.log('Database connected...'))
-  .catch((err) => console.error('Error connecting to database:', err));
+  .then(() => {
+    console.log('Database connection has been established successfully.');
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
 
 app.use('/api/users', userRoutes);
 
 app.use('/api/tasks', taskRoutes);
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
